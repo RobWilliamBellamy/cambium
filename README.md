@@ -14,7 +14,7 @@ This README documents whatever steps are necessary to get the application up and
 * Run the project on a command line using the command: "npm start"
 * Page will open in your default browser.
 * Click "Start" on the interface to begin the rover movement sequence.
-* Jest-based tests can be run via "npm test".
+* Jest-based tests can be run via "npm test a".
 
 ### Contribution guidelines ###
 
