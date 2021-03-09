@@ -75,7 +75,6 @@ const App = () => {
     // Define pause button text.
     const pause_text = (store.paused) ? 'Resume' : 'Pause';
     const pause_func = (store.paused) ? resume : pause;
-    const state_text = ''
 
     return (
 

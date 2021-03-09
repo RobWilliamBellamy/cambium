@@ -31,7 +31,6 @@ export const gridReducer = (state, action) => {
 // On tick.
 const onTick = (new_state) => {
 
-    new_state.tick++;
     return roverTick(new_state);
 }
 
@@ -123,7 +122,7 @@ const roverTick = (state) => {
 
         let rover = state.rovers[state.active_rover];
         const instruction = rover.movements.charAt(state.tick);
-        console.log("Move rover", state.active_rover, rover.heading, instruction);
+        console.log("Move rover", rover.name, rover.heading, instruction);
 
         // Process instruction.
         rover = processInstruction(rover, instruction);
@@ -131,7 +130,7 @@ const roverTick = (state) => {
         // Move to the next rover?
         if (state.tick >= rover.movements.length) {
 
-            state.tick = 0;
+            state.tick = -1;
             state.active_rover++;
             console.log("Switching to rover", state.active_rover);
 
@@ -142,6 +141,8 @@ const roverTick = (state) => {
                 console.log("End of movements", state);
             }
         }
+
+        state.tick++;
     }
 
     return state;
@@ -174,7 +175,7 @@ export const validateMovement = (position, movement) => {
 // Validate instructions.
 export const validateInstructions = (instructions) => {
 
-    if (instructions.match('[^LRM]')) {
+    if (!instructions || instructions.match('[^LRM]')) {
         throw new Error(config.errors.invalid_instructions);
     }
 
