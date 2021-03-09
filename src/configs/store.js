@@ -4,6 +4,7 @@ export const initial_state = {
           { name: "Perseverance", position: [3, 3], heading: "E", movements: "MMRMMRMRRM" },
       ],
       active_rover: 0,
+      paused: false,
       ticking: false,
       tick: 0
 };

@@ -14,27 +14,69 @@ export const gridReducer = (state, action) => {
     let new_state = JSON.parse(JSON.stringify(state));
     switch (action.type) {
         case 'ON_TICK':
-            new_state.tick++;
-            return roverTick(new_state);
+            return onTick(new_state);
         case 'START':
-            new_state = JSON.parse(JSON.stringify(initial_state));
-            new_state.rovers.forEach((r) => {
-                validateInstructions(r.movements);
-                validateMovements(r);
-            });
-            new_state = JSON.parse(JSON.stringify(initial_state));
-            new_state.ticking = true;
-            return new_state;
+            return onStart();
         case 'PAUSE':
-            return new_state;
+            return onPause(new_state);
+        case 'RESUME':
+            return onResume(new_state);
         case 'RESET':
-            new_state = JSON.parse(JSON.stringify(initial_state));
-            new_state.ticking = false;
-            return new_state;
+            return onReset();
         default:
             return state;
     }
 };
+
+// On tick.
+const onTick = (new_state) => {
+
+    new_state.tick++;
+    return roverTick(new_state);
+}
+
+// On start, validate instructions and confirm the rover will remain in-bounds of grid.
+const onStart = () => {
+
+    let new_state = JSON.parse(JSON.stringify(initial_state));
+    new_state.rovers.forEach((r) => {
+        validateInstructions(r.movements);
+        validateMovements(r);
+    });
+
+    new_state = JSON.parse(JSON.stringify(initial_state));
+    new_state.ticking = true;
+
+    return new_state;
+}
+
+// On pause.
+const onPause = (new_state) => {
+
+    if (new_state.ticking) {
+        new_state.paused = true;
+        new_state.ticking = false;
+    }
+    return new_state;
+}
+
+// On resume.
+const onResume = (new_state) => {
+
+    if (!new_state.ticking) {
+        new_state.paused = false;
+        new_state.ticking = true;
+    }
+    return new_state;
+}
+
+// On reset.
+const onReset = () => {
+
+    let new_state = JSON.parse(JSON.stringify(initial_state));
+    new_state.ticking = false;
+    return new_state;
+}
 
 // Determine the new heading of the rover after rotating L/R 90 deg.
 const rotateRover = (heading, direction) => {

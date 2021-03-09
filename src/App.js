@@ -15,24 +15,34 @@ const App = () => {
         initial_state
     );
 
-    const start = () => {
-
-        dispatch({
-            type: 'START'
-        });
+    const startTimer = () => {
 
         clearInterval(timer_id);
         timer_id = setInterval(() => {
             dispatch({ type: 'ON_TICK'});
         }, config.tick_rate_ms);
+    }
+
+    const start = () => {
+
+        dispatch({
+            type: 'START'
+        });
+        startTimer();
     };
 
     const pause = () => {
         dispatch({
             type: 'PAUSE'
         });
-
         clearInterval(timer_id);
+    }
+
+    const resume = () => {
+        dispatch({
+            type: 'RESUME'
+        });
+        startTimer();
     }
 
     const reset = () => {
@@ -47,12 +57,16 @@ const App = () => {
         clearInterval(timer_id);
     }
 
+    // Define pause button text.
+    const pause_text = (store.paused) ? 'Resume' : 'Pause';
+    const pause_func = (store.paused) ? resume : pause;
+
     return (
 
         <div>
             <div className="buttons">
                 <button id="start" className="button" onClick={ () => start() }>Start</button>
-                <button id="pause" className="button" onClick={ () => pause() }>Pause</button>
+                <button id="pause" className="button" onClick={ () => pause_func() }>{ pause_text }</button>
                 <button id="reset" className="button" onClick={ () => reset() }>Reset</button>
             </div>
             <Grid store={ store } />
