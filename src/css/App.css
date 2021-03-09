@@ -1,6 +1,6 @@
 .buttons {
     background-color: #F37E3B;
-    text-align: center;    
+    text-align: center;
     width: 100%;
 }
 
@@ -15,4 +15,12 @@
     font-size: 12pt;
     text-shadow: 2px 2px #000000;
     margin: 4pt;
+}
+
+.state-text {
+    text-align: center;
+    color: white;
+    width: 100%;
+    margin-bottom: 10pt;
+        text-shadow: 2px 2px #000000;
 }
