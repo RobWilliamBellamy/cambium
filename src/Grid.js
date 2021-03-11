@@ -1,10 +1,9 @@
-import React from 'react';
 import GridItem from './GridItem.js';
 
 import { config } from './configs/config.js';
 import './css/Grid.css';
 
-export default function Grid(props) {
+const Grid = () => {
 
     const grid = [];
     const grid_size = config.grid_size;
@@ -20,7 +19,7 @@ export default function Grid(props) {
                             width={ 10 }
                             x={ x }
                             y={ y }
-                            rovers={ props.store.rovers } />);
+        />);
     }
 
     const gridTemplateColumns = [];
@@ -29,13 +28,15 @@ export default function Grid(props) {
     }
 
     const style = {
-          gridTemplateColumns: gridTemplateColumns.join(' ')
-    }
+        gridTemplateColumns: gridTemplateColumns.join(' ')
+    };
 
     return (<div className="grid-background">
                 <div style={ style } className="grid-container">
                     { grid }
                 </div>
             </div>
-    )
+    );
 }
+
+export default Grid;

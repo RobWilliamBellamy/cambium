@@ -6,14 +6,14 @@ const MOVEMENT_VECTORS = {
     'E': [ 1,  0],
     'S': [ 0, -1],
     'W': [-1,  0]
-}
+};
 
 // Grid reducer, react to actions and modify state.
-export const gridReducer = (state, action) => {
+const gridReducer = (state, action) => {
 
     let new_state = JSON.parse(JSON.stringify(state));
     switch (action.type) {
-        case 'ON_TICK':
+        case 'ON_TICK':            
             return onTick(new_state);
         case 'START':
             return onStart();
@@ -32,7 +32,7 @@ export const gridReducer = (state, action) => {
 const onTick = (new_state) => {
 
     return roverTick(new_state);
-}
+};
 
 // On start, validate instructions and confirm the rover will remain in-bounds of grid.
 const onStart = () => {
@@ -47,7 +47,7 @@ const onStart = () => {
     new_state.ticking = true;
 
     return new_state;
-}
+};
 
 // On pause.
 const onPause = (new_state) => {
@@ -57,7 +57,7 @@ const onPause = (new_state) => {
         new_state.ticking = false;
     }
     return new_state;
-}
+};
 
 // On resume.
 const onResume = (new_state) => {
@@ -67,7 +67,7 @@ const onResume = (new_state) => {
         new_state.ticking = true;
     }
     return new_state;
-}
+};
 
 // On reset.
 const onReset = () => {
@@ -75,7 +75,7 @@ const onReset = () => {
     let new_state = JSON.parse(JSON.stringify(initial_state));
     new_state.ticking = false;
     return new_state;
-}
+};
 
 // Determine the new heading of the rover after rotating L/R 90 deg.
 const rotateRover = (heading, direction) => {
@@ -88,7 +88,7 @@ const rotateRover = (heading, direction) => {
                     heading_index;
 
     return movement_keys[heading_index];
-}
+};
 
 // Process an instruction.
 const processInstruction = (rover_state, instruction) => {
@@ -113,7 +113,7 @@ const processInstruction = (rover_state, instruction) => {
     }
 
     return rover_state;
-}
+};
 
 // Move the rover along a main compass heading.
 const roverTick = (state) => {
@@ -130,7 +130,7 @@ const roverTick = (state) => {
         // Move to the next rover?
         if (state.tick >= rover.movements.length) {
 
-            state.tick = -1;
+            state.tick = 0;
             state.active_rover++;
             console.log("Switching to rover", state.active_rover);
 
@@ -141,25 +141,26 @@ const roverTick = (state) => {
                 console.log("End of movements", state);
             }
         }
-
-        state.tick++;
+        else {
+            state.tick++;
+        }        
     }
 
     return state;
 };
 
 // Validate full list of movement instructions against an initial state.
-export const validateMovements = (state) => {
+const validateMovements = (state) => {
 
     for (let i = 0; i < state.movements.length; i++) {
         state = processInstruction(state, state.movements.charAt(i));
     }
 
     return true;
-}
+};
 
 // Validate the given movement.
-export const validateMovement = (position, movement) => {
+const validateMovement = (position, movement) => {
 
     for (const i in position) {
 
@@ -170,14 +171,22 @@ export const validateMovement = (position, movement) => {
     };
 
     return true;
-}
+};
 
 // Validate instructions.
-export const validateInstructions = (instructions) => {
+const validateInstructions = (instructions) => {
 
     if (!instructions || instructions.match('[^LRM]')) {
         throw new Error(config.errors.invalid_instructions);
     }
 
     return true;
-}
+};
+
+// Export API methods.
+export {
+    gridReducer,
+    validateMovements,
+    validateMovement,
+    validateInstructions
+};

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer, createContext } from 'react';
 import { gridReducer } from './GridReducer';
 import Grid from './Grid';
 
@@ -8,9 +8,13 @@ import './css/App.css';
 
 let timer_id;
 
+// Create context to share state.
+export const AppContext = createContext();
+
+// Create App.
 const App = () => {
 
-    const [store, dispatch] = React.useReducer(
+    const [state, dispatch] = useReducer(
         gridReducer,
         initial_state
     );
@@ -21,72 +25,70 @@ const App = () => {
         timer_id = setInterval(() => {
             dispatch({ type: 'ON_TICK'});
         }, config.tick_rate_ms);
-    }
+    };
 
     const start = () => {
 
-        dispatch({
-            type: 'START'
-        });
+        dispatch({ type: 'START' });
         startTimer();
     };
 
     const pause = () => {
-        dispatch({
-            type: 'PAUSE'
-        });
+        dispatch({ type: 'PAUSE' });
         clearInterval(timer_id);
-    }
+    };
 
     const resume = () => {
-        dispatch({
-            type: 'RESUME'
-        });
+        dispatch({ type: 'RESUME' });
         startTimer();
-    }
+    };
 
     const reset = () => {
-        dispatch({
-            type: 'RESET'
-        });
+        dispatch({ type: 'RESET' });
         clearInterval(timer_id);
-    }
+    };
 
-     const stateText = () => {
+    const stateText = () => {
 
-          let state_text = 'Stopped';
-          if (store.ticking) {
-              const rover = store.rovers[store.active_rover];
-              state_text = 'Running -' + rover.name + ', '
-                + rover.position + ', ' + rover.heading;
-          }
-          else if (store.paused) {
-              state_text = 'Paused';
-          }
+        let state_text = 'Stopped';
+        if (state.ticking) {
+            const rover = state.rovers[state.active_rover];            
+            state_text = `Running - ${ rover.name }: 
+                                    (${ rover.position }), 
+                                    ${ rover.heading }`;
+        }
+        else if (state.paused) {
+            state_text = 'Paused';
+        }
 
-          return state_text;
-     }
+        return state_text;
+    };
 
     // Stop the timer.
-    if (store.ticking === false) {
+    if (state.ticking === false) {
         clearInterval(timer_id);
     }
 
     // Define pause button text.
-    const pause_text = (store.paused) ? 'Resume' : 'Pause';
-    const pause_func = (store.paused) ? resume : pause;
+    let pause_text = 'Pause';
+    let pause_func = pause;
+
+    if (state.paused) {
+        pause_text  = 'Resume';
+        pause_func  = resume;
+    }
 
     return (
 
-        <div>
+        <AppContext.Provider value={ [state, dispatch] }>
             <div className="buttons">
                 <button id="start" className="button" onClick={ () => start() }>Start</button>
                 <button id="pause" className="button" onClick={ () => pause_func() }>{ pause_text }</button>
                 <button id="reset" className="button" onClick={ () => reset() }>Reset</button>
             </div>
             <div className="state-text">App Status: { stateText() }</div>
-            <Grid store={ store } />
-        </div>
+            <Grid />
+        </AppContext.Provider>
     );
 };
 
