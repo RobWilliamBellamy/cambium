@@ -1,4 +1,4 @@
-import React, { useReducer, createContext } from 'react';
+import React, { useState, useReducer, createContext } from 'react';
 import { gridReducer } from './GridReducer';
 import Grid from './Grid';
 
@@ -6,14 +6,13 @@ import { config } from './configs/config.js';
 import { initial_state } from './configs/store.js';
 import './css/App.css';
 
-let timer_id;
-
 // Create context to share state.
 export const AppContext = createContext();
 
 // Create App.
 const App = () => {
 
+    const [timerId, setTimerId] = useState(-1);
     const [state, dispatch] = useReducer(
         gridReducer,
         initial_state
@@ -21,10 +20,11 @@ const App = () => {
 
     const startTimer = () => {
 
-        clearInterval(timer_id);
-        timer_id = setInterval(() => {
+        clearInterval(timerId);
+        const timer_id = setInterval(() => {
             dispatch({ type: 'ON_TICK'});
         }, config.tick_rate_ms);
+        setTimerId(timer_id);
     };
 
     const start = () => {
@@ -35,7 +35,7 @@ const App = () => {
 
     const pause = () => {
         dispatch({ type: 'PAUSE' });
-        clearInterval(timer_id);
+        clearInterval(timerId);
     };
 
     const resume = () => {
@@ -45,7 +45,7 @@ const App = () => {
 
     const reset = () => {
         dispatch({ type: 'RESET' });
-        clearInterval(timer_id);
+        clearInterval(timerId);
     };
 
     const stateText = () => {
@@ -66,7 +66,7 @@ const App = () => {
 
     // Stop the timer.
     if (state.ticking === false) {
-        clearInterval(timer_id);
+        clearInterval(timerId);
     }
 
     // Define pause button text.
